@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Padding/margin parameters-->
+    <dimen name="layout_padding">16dp</dimen>
+    <dimen name="margin_left">10dp</dimen>
+    <dimen name="margin_top">5dp</dimen>
+
+    <!--Icon size parameters-->
+    <dimen name="icon_size">40dp</dimen>
+
+</resources>
