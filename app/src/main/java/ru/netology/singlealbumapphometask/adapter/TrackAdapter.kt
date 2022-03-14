@@ -9,10 +9,16 @@ import ru.netology.singlealbumapphometask.R
 import ru.netology.singlealbumapphometask.databinding.CardTrackBinding
 import ru.netology.singlealbumapphometask.dto.Track
 
-class TrackAdapter: ListAdapter<Track, TrackViewHolder>(TrackDiffCallBack()) {
+interface OnInteractionListener {
+    fun onPlayOrPause(track: Track) {}
+}
+
+class TrackAdapter(
+    private  val onInteractionListener: OnInteractionListener
+    ): ListAdapter<Track, TrackViewHolder>(TrackDiffCallBack()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val binding = CardTrackBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return TrackViewHolder(binding)
+        return TrackViewHolder(binding, onInteractionListener)
     }
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
@@ -22,13 +28,24 @@ class TrackAdapter: ListAdapter<Track, TrackViewHolder>(TrackDiffCallBack()) {
 
 }
 
-class TrackViewHolder(private val binding: CardTrackBinding)
+class TrackViewHolder(
+    private val binding: CardTrackBinding,
+    private val onInteractionListener: OnInteractionListener
+)
     : RecyclerView.ViewHolder(binding.root) {
     fun bind(track: Track) {
         with(binding){
             trackTitle.text = track.id.toString()
             albumTitle.text = track.file
-            interactionButton.setImageResource(R.drawable.ic_stop_circle)
+            if (track.isPlayed) {
+                interactionButton.setImageResource(R.drawable.ic_pause_circle)
+            } else {
+                interactionButton.setImageResource(R.drawable.ic_play_circle)
+            }
+
+            interactionButton.setOnClickListener {
+                onInteractionListener.onPlayOrPause(track)
+            }
         }
     }
 }
