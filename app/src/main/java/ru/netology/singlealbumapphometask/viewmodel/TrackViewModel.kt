@@ -27,14 +27,14 @@ class TrackViewModel: ViewModel() {
     fun playOrPauseTrack(track: Track): Boolean? {
         _data.value = _data.value?.map {
             if (track.id == it.id) {
-                it.copy(isPlayed = !track.isPlayed)
+                it.copy(isPlaying = !track.isPlaying)
             } else {
                 it
             }
         }
         return data.value?.first {
             it.id == track.id
-        }?.isPlayed
+        }?.isPlaying
     }
 
     fun getTrackById(id: Long): Track? {

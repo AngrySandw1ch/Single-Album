@@ -37,7 +37,7 @@ class TrackViewHolder(
         with(binding){
             trackTitle.text = track.id.toString()
             albumTitle.text = track.file
-            if (track.isPlayed) {
+            if (track.isPlaying) {
                 interactionButton.setImageResource(R.drawable.ic_pause_circle)
             } else {
                 interactionButton.setImageResource(R.drawable.ic_play_circle)

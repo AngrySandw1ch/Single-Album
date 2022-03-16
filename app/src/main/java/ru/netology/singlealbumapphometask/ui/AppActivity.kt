@@ -4,9 +4,6 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.withContext
 import ru.netology.singlealbumapphometask.adapter.OnInteractionListener
 import ru.netology.singlealbumapphometask.adapter.TrackAdapter
 import ru.netology.singlealbumapphometask.databinding.ActivityAppBinding
@@ -51,9 +48,21 @@ class AppActivity : AppCompatActivity() {
                     player?.reset()
                     player?.setDataSource(this@AppActivity, Uri.parse("$BASE_URL${track.file}"))
                 }.play()
-                currentTrack = track.copy(isPlayed = !track.isPlayed)
+                currentTrack = track.copy(isPlaying = !track.isPlaying)
             }
         })
+
+        mediaObserver.player?.setOnCompletionListener { mPlayer ->
+            currentTrack = currentTrack?.copy(isPlaying = false)
+            currentTrack?.let { track ->
+                viewModel.playOrPauseTrack(track)
+            }
+            mPlayer.reset()
+            mPlayer.setDataSource(this@AppActivity, Uri.parse(BASE_URL + "2.mp3"))
+            mPlayer.start()
+            return@setOnCompletionListener
+        }
+
         binding.recycler.adapter = adapter
         viewModel.data.observe(this) {
             adapter.submitList(it)
