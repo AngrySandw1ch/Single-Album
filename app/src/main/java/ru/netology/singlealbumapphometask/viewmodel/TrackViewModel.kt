@@ -38,8 +38,12 @@ class TrackViewModel: ViewModel() {
     }
 
     fun getTrackById(id: Long): Track? {
-        return _data.value?.first {
+        return data.value?.first {
             it.id == id
         }
+    }
+
+    fun getAll(): List<Track>? {
+        return data.value
     }
 }

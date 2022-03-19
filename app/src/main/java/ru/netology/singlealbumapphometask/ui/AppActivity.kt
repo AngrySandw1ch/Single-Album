@@ -53,16 +53,29 @@ class AppActivity : AppCompatActivity() {
         })
 
         mediaObserver.player?.setOnCompletionListener { mPlayer ->
-            currentTrack = currentTrack?.copy(isPlaying = false)
+            val tracks = viewModel.getAll()
+            var tracksSize = 0
+            tracks?.size?.let {
+                tracksSize = it
+            }
+            currentTrack = currentTrack?.copy(isPlaying = true)
             currentTrack?.let { track ->
                 viewModel.playOrPauseTrack(track)
             }
+            val nextTrack = currentTrack?.id?.toInt()?.let { currentTrackId ->
+                if (currentTrackId < tracksSize)
+                 tracks?.get(currentTrackId)
+                else tracks?.get(0)
+            }
+            if (nextTrack != null) {
+                viewModel.playOrPauseTrack(nextTrack)
+            }
             mPlayer.reset()
-            mPlayer.setDataSource(this@AppActivity, Uri.parse(BASE_URL + "2.mp3"))
+            mPlayer.setDataSource(this@AppActivity, Uri.parse("$BASE_URL${nextTrack?.file}"))
+            mPlayer.prepareAsync()
             mPlayer.start()
-            return@setOnCompletionListener
+            currentTrack = nextTrack
         }
-
         binding.recycler.adapter = adapter
         viewModel.data.observe(this) {
             adapter.submitList(it)
